@@ -1,0 +1,188 @@
+/* ============================================================
+   EVO - Dawn Era Theme
+   "The Dawn of Man" - rough stone, ochre, primal warmth
+   Overrides glass-panel defaults when .era-dawn is active
+   ============================================================ */
+
+/* --- Era color tokens --------------------------------------- */
+.era-dawn {
+  --era-primary: #CC7722;
+  --era-secondary: #8B4513;
+  --era-accent: #F5F5DC;
+  --era-bg: rgba(40, 28, 18, 0.85);
+  --era-bg-light: rgba(60, 42, 28, 0.7);
+  --era-border: #5C4033;
+  --era-text: #F5F5DC;
+  --era-text-muted: rgba(245, 245, 220, 0.5);
+  --era-progress-fill: #CC7722;
+  --era-progress-bg: rgba(92, 64, 51, 0.5);
+  --era-icon-tint: brightness(1.1) sepia(0.4) saturate(1.4) hue-rotate(-10deg);
+}
+
+/* --- Panel overrides ---------------------------------------- */
+.era-dawn .glass-panel,
+.era-dawn .glass-panel-dark {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(92, 64, 51, 0.6) 0%,
+      rgba(40, 28, 18, 0.75) 40%,
+      rgba(50, 35, 22, 0.7) 100%
+    );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid var(--era-border);
+  border-radius: 4px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(245, 245, 220, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  /* Subtle stone texture via repeating gradients */
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(0, 0, 0, 0.04) 4px,
+      rgba(0, 0, 0, 0.04) 5px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 6px,
+      rgba(255, 255, 255, 0.02) 6px,
+      rgba(255, 255, 255, 0.02) 7px
+    ),
+    linear-gradient(
+      135deg,
+      rgba(92, 64, 51, 0.6) 0%,
+      rgba(40, 28, 18, 0.75) 40%,
+      rgba(50, 35, 22, 0.7) 100%
+    );
+}
+
+/* --- Button overrides --------------------------------------- */
+.era-dawn .glass-button {
+  background: rgba(92, 64, 51, 0.5);
+  border: 1px solid var(--era-border);
+  border-radius: 4px;
+  color: var(--era-accent);
+  font-weight: 500;
+}
+
+.era-dawn .glass-button:hover {
+  background: rgba(204, 119, 34, 0.35);
+  border-color: var(--era-primary);
+  box-shadow: 0 0 8px rgba(204, 119, 34, 0.2);
+}
+
+.era-dawn .glass-button:active {
+  background: rgba(204, 119, 34, 0.5);
+}
+
+.era-dawn .glass-button.primary {
+  background: rgba(204, 119, 34, 0.4);
+  border-color: var(--era-primary);
+  color: #fff;
+}
+
+.era-dawn .glass-button.primary:hover {
+  background: rgba(204, 119, 34, 0.55);
+  box-shadow: 0 0 12px rgba(204, 119, 34, 0.3);
+}
+
+.era-dawn .glass-button:disabled {
+  opacity: 0.35;
+  border-color: rgba(92, 64, 51, 0.4);
+}
+
+/* --- Divider override --------------------------------------- */
+.era-dawn .glass-divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(204, 119, 34, 0.3) 20%,
+    rgba(204, 119, 34, 0.3) 80%,
+    transparent
+  );
+}
+
+/* --- Typography --------------------------------------------- */
+.era-dawn h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--era-primary);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.era-dawn h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--era-accent);
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.era-dawn h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(245, 245, 220, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- Progress bar ------------------------------------------- */
+.era-dawn .progress-bar {
+  background: var(--era-progress-bg);
+  border: 1px solid rgba(92, 64, 51, 0.6);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.era-dawn .progress-bar .progress-fill {
+  background: linear-gradient(
+    90deg,
+    var(--era-secondary),
+    var(--era-primary)
+  );
+  height: 100%;
+  transition: width 0.4s ease;
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(204, 119, 34, 0.3);
+}
+
+/* --- Resource icon warm tint -------------------------------- */
+.era-dawn .resource-icon {
+  filter: var(--era-icon-tint);
+}
+
+/* --- Scrollbar era override --------------------------------- */
+.era-dawn ::-webkit-scrollbar-thumb {
+  background: rgba(204, 119, 34, 0.3);
+}
+
+.era-dawn ::-webkit-scrollbar-thumb:hover {
+  background: rgba(204, 119, 34, 0.45);
+}
+
+.era-dawn ::-webkit-scrollbar-track {
+  background: rgba(40, 28, 18, 0.4);
+}
+
+/* --- Close button ------------------------------------------- */
+.era-dawn .glass-close-btn {
+  background: rgba(92, 64, 51, 0.4);
+  border-color: var(--era-border);
+  color: var(--era-text-muted);
+}
+
+.era-dawn .glass-close-btn:hover {
+  background: rgba(180, 60, 40, 0.35);
+  color: #e06050;
+}
+
+/* --- Title bar ---------------------------------------------- */
+.era-dawn .glass-title-bar h3 {
+  color: var(--era-primary);
+}

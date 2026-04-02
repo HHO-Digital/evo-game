@@ -1,0 +1,180 @@
+import type { TechDefinition } from '@/types';
+
+export const DAWN_TECHNOLOGIES: TechDefinition[] = [
+  // ─── Survival branch ───────────────────────────────────────────────
+  {
+    id: 'stone_tools',
+    name: 'Stone Tools',
+    era: 'dawn',
+    branch: 'survival',
+    description: 'Chip flint into useful shapes — scrapers, hand-axes, and blades.',
+    icon: '🪨',
+    cost: [{ resourceId: 'flint', amount: 5 }],
+    researchTime: 50,
+    prerequisites: [],
+    effects: [
+      { type: 'modify_gather_rate', target: 'flint', value: 0.2 },
+      { type: 'modify_gather_rate', target: 'wood', value: 0.1 },
+    ],
+  },
+  {
+    id: 'fire_making',
+    name: 'Fire Making',
+    era: 'dawn',
+    branch: 'survival',
+    description: 'Tame the wild flame. Light, warmth, and cooked food change everything.',
+    icon: '🔥',
+    cost: [
+      { resourceId: 'wood', amount: 10 },
+      { resourceId: 'flint', amount: 5 },
+    ],
+    researchTime: 100,
+    prerequisites: ['stone_tools'],
+    effects: [
+      { type: 'modify_capacity', target: 'population', value: 5 },
+      { type: 'modify_gather_rate', target: 'meat', value: 0.1 },
+      { type: 'unlock_building', target: 'campfire' },
+    ],
+  },
+  {
+    id: 'shelter_building',
+    name: 'Shelter Building',
+    era: 'dawn',
+    branch: 'survival',
+    description: 'Lean-to shelters of branches and hides keep the rain and cold at bay.',
+    icon: '🏕️',
+    cost: [
+      { resourceId: 'wood', amount: 15 },
+      { resourceId: 'hides', amount: 5 },
+    ],
+    researchTime: 120,
+    prerequisites: ['stone_tools'],
+    effects: [
+      { type: 'modify_capacity', target: 'population', value: 8 },
+      { type: 'unlock_role', target: 'builder' },
+      { type: 'unlock_building', target: 'lean_to' },
+    ],
+  },
+  {
+    id: 'hide_clothing',
+    name: 'Hide Clothing',
+    era: 'dawn',
+    branch: 'survival',
+    description: 'Stitched hides ward off the cold and grant mobility in harsh weather.',
+    icon: '🧥',
+    cost: [{ resourceId: 'hides', amount: 10 }],
+    researchTime: 80,
+    prerequisites: ['stone_tools'],
+    effects: [
+      { type: 'modify_stat', target: 'adaptability', value: 2 },
+      { type: 'modify_gather_rate', target: 'hides', value: 0.1 },
+    ],
+  },
+
+  // ─── Military branch ───────────────────────────────────────────────
+  {
+    id: 'sharp_spear',
+    name: 'Sharp Spear',
+    era: 'dawn',
+    branch: 'military',
+    description: 'A flint tip bound to a long shaft — deadly at range.',
+    icon: '🗡️',
+    cost: [
+      { resourceId: 'flint', amount: 8 },
+      { resourceId: 'wood', amount: 5 },
+    ],
+    researchTime: 70,
+    prerequisites: ['stone_tools'],
+    effects: [
+      { type: 'unlock_role', target: 'hunter' },
+      { type: 'modify_gather_rate', target: 'meat', value: 0.3 },
+      { type: 'modify_gather_rate', target: 'hides', value: 0.15 },
+      { type: 'unlock_building', target: 'drying_rack' },
+    ],
+  },
+  {
+    id: 'group_hunting',
+    name: 'Group Hunting',
+    era: 'dawn',
+    branch: 'military',
+    description: 'Coordinated hunts take down larger prey and bond the tribe.',
+    icon: '🏹',
+    cost: [{ resourceId: 'meat', amount: 5 }],
+    researchTime: 90,
+    prerequisites: ['sharp_spear'],
+    effects: [
+      { type: 'modify_gather_rate', target: 'meat', value: 0.4 },
+      { type: 'modify_gather_rate', target: 'hides', value: 0.2 },
+      { type: 'modify_stat', target: 'strength', value: 2 },
+    ],
+  },
+
+  // ─── Culture branch ────────────────────────────────────────────────
+  {
+    id: 'cave_painting',
+    name: 'Cave Painting',
+    era: 'dawn',
+    branch: 'culture',
+    description: 'Ochre and charcoal on stone — the first stories told in colour.',
+    icon: '🎨',
+    cost: [
+      { resourceId: 'berries', amount: 5 },
+      { resourceId: 'flint', amount: 3 },
+    ],
+    researchTime: 80,
+    prerequisites: ['fire_making'],
+    effects: [
+      { type: 'modify_stat', target: 'charisma', value: 2 },
+      { type: 'era_progress', target: 'dawn', value: 1 },
+    ],
+  },
+  {
+    id: 'oral_tradition',
+    name: 'Oral Tradition',
+    era: 'dawn',
+    branch: 'culture',
+    description: 'Stories, songs, and chants carry wisdom from one generation to the next.',
+    icon: '🗣️',
+    cost: [],
+    researchTime: 100,
+    prerequisites: ['cave_painting'],
+    effects: [
+      { type: 'modify_stat', target: 'wisdom', value: 3 },
+      { type: 'modify_stat', target: 'charisma', value: 1 },
+      { type: 'unlock_role', target: 'shaman' },
+    ],
+  },
+
+  // ─── Science branch ────────────────────────────────────────────────
+  {
+    id: 'star_watching',
+    name: 'Star Watching',
+    era: 'dawn',
+    branch: 'science',
+    description: 'By the campfire the curious gaze upward and begin to track the heavens.',
+    icon: '⭐',
+    cost: [],
+    researchTime: 60,
+    prerequisites: ['fire_making'],
+    effects: [
+      { type: 'modify_stat', target: 'intelligence', value: 2 },
+      { type: 'unlock_event', target: 'strange_lights' },
+    ],
+  },
+  {
+    id: 'herb_knowledge',
+    name: 'Herb Knowledge',
+    era: 'dawn',
+    branch: 'science',
+    description: 'Which plants soothe, which heal, and which to avoid.',
+    icon: '🌿',
+    cost: [],
+    researchTime: 80,
+    prerequisites: ['star_watching'],
+    effects: [
+      { type: 'modify_stat', target: 'wisdom', value: 2 },
+      { type: 'modify_stat', target: 'intelligence', value: 1 },
+      { type: 'unlock_resource', target: 'herbs' },
+    ],
+  },
+];

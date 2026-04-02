@@ -1,0 +1,23 @@
+{
+  "name": "evo-game",
+  "version": "0.1.0",
+  "description": "EVO - A human evolution game",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "howler": "^2.2.4",
+    "idb": "^8.0.3",
+    "pixi.js": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.12",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2"
+  }
+}
