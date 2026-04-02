@@ -6,6 +6,7 @@ export interface GameEvents {
   // Era events
   'era:advance': { from: string; to: string };
   'era:milestoneCompleted': { eraId: string; milestoneId: string };
+  'era:blendChanged': { progress: number; currentEra: string; nextEra: string };
 
   // Resource events
   'resource:changed': { resourceId: string; amount: number; delta: number };

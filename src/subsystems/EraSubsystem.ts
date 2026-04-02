@@ -8,6 +8,10 @@ import { AWAKENING_ERA } from '@/data/eras/awakening';
  * EraSubsystem
  * Tracks the current era, monitors milestone completion, and orchestrates
  * transitions between eras when the player meets all required milestones.
+ *
+ * Supports gradual era blending: as milestones are completed, eraBlendProgress
+ * increases from 0.0 to 1.0, driving smooth visual interpolation between
+ * the current era and the next era.
  */
 
 const ERA_SEQUENCE: EraId[] = [
@@ -29,12 +33,16 @@ export class EraSubsystem extends SubsystemBase<EraProgression> {
   // ── Event unsubscribers ───────────────────────────────────────────
   private unsubscribers: (() => void)[] = [];
 
+  /** The last emitted blend progress, used to avoid redundant events. */
+  private lastEmittedBlend = 0;
+
   constructor(eventBus: EventBus) {
     super(eventBus, {
       currentEra: 'dawn',
       milestones: [],
       canAdvance: false,
       completedEras: [],
+      eraBlendProgress: 0,
     });
   }
 
@@ -83,6 +91,9 @@ export class EraSubsystem extends SubsystemBase<EraProgression> {
     this.state.completedEras.push(previousEra);
     this.state.currentEra = nextEra;
     this.state.canAdvance = false;
+    // Reset blend progress for the new era
+    this.state.eraBlendProgress = 0;
+    this.lastEmittedBlend = 0;
 
     this.loadEraMilestones(nextEra);
 
@@ -95,6 +106,23 @@ export class EraSubsystem extends SubsystemBase<EraProgression> {
   /** Get the full definition for the current era (if loaded). */
   getCurrentEraDefinition(): EraDefinition | undefined {
     return ERA_DEFINITIONS[this.state.currentEra];
+  }
+
+  /**
+   * Get the current blend progress (0.0 = fully current era, 1.0 = ready for next).
+   * Used by the rendering layer to drive visual interpolation.
+   */
+  getBlendProgress(): number {
+    return this.state.eraBlendProgress;
+  }
+
+  /**
+   * Get the ID of the next era in the sequence, or null if at the last era.
+   */
+  getNextEraId(): EraId | null {
+    const currentIndex = ERA_SEQUENCE.indexOf(this.state.currentEra);
+    if (currentIndex === -1 || currentIndex >= ERA_SEQUENCE.length - 1) return null;
+    return ERA_SEQUENCE[currentIndex + 1];
   }
 
   // ── Internal helpers ──────────────────────────────────────────────
@@ -137,7 +165,43 @@ export class EraSubsystem extends SubsystemBase<EraProgression> {
         this.state.canAdvance = true;
       }
 
+      // ── Update blend progress ────────────────────────────────────
+      this.updateBlendProgress();
+
       this.emitStateChange();
+    }
+  }
+
+  /**
+   * Recalculate era blend progress based on milestone completion ratio.
+   * Progress = completedMilestones / totalMilestones (all milestones, not just required).
+   * Emits 'era:blendChanged' when the progress changes meaningfully.
+   */
+  private updateBlendProgress(): void {
+    const total = this.state.milestones.length;
+    if (total === 0) {
+      this.state.eraBlendProgress = 0;
+      return;
+    }
+
+    const completed = this.state.milestones.filter(m => m.completed).length;
+    const newProgress = completed / total;
+
+    this.state.eraBlendProgress = newProgress;
+
+    // Only emit if the change is meaningful (avoid spamming for tiny floating-point diffs)
+    const BLEND_EPSILON = 0.001;
+    if (Math.abs(newProgress - this.lastEmittedBlend) > BLEND_EPSILON) {
+      this.lastEmittedBlend = newProgress;
+
+      const nextEra = this.getNextEraId();
+      if (nextEra) {
+        this.eventBus.emit('era:blendChanged', {
+          progress: newProgress,
+          currentEra: this.state.currentEra,
+          nextEra,
+        });
+      }
     }
   }
 

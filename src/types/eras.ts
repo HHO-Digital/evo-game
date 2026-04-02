@@ -58,4 +58,6 @@ export interface EraProgression {
   milestones: Milestone[];
   canAdvance: boolean;
   completedEras: EraId[];
+  /** 0.0 = fully current era, 1.0 = visually ready for next era. Drives gradual blending. */
+  eraBlendProgress: number;
 }

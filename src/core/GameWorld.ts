@@ -177,6 +177,16 @@ export class GameWorld {
     // When era advance button is clicked
     this.eventBus.on('era:advance', ({ from, to }) => {
       // The EraSubsystem has already updated state.
+      // Clear any inline CSS blend overrides so the new era's CSS class
+      // takes full control of theming after the transition.
+      const overlay = document.getElementById('ui-overlay');
+      if (overlay) {
+        overlay.style.removeProperty('--era-primary');
+        overlay.style.removeProperty('--era-secondary');
+        overlay.style.removeProperty('--era-border');
+      }
+      this.lastUIBlend = 0;
+
       // Play a slow cinematic transition, then update visuals.
       const eraDef = this.era.getCurrentEraDefinition();
       const eraName = eraDef?.name ?? to;
@@ -203,6 +213,15 @@ export class GameWorld {
     this.eventBus.on('population:roleAssigned', ({ role, count }) => {
       // This is already handled internally by PopulationSubsystem and
       // ResourceSubsystem via their event listeners.
+    });
+
+    // ── Gradual era blending ──────────────────────────────────────
+    // As the player completes milestones, the blend progress increases.
+    // When it exceeds 0.7, start fading the CSS theme toward the next era
+    // so the UI panels subtly shift their border / accent colors before
+    // the cinematic plays.
+    this.eventBus.on('era:blendChanged', ({ progress, currentEra, nextEra }) => {
+      this.applyUIBlendTheme(progress, currentEra as EraId, nextEra as EraId);
     });
 
     // Season changes affect resource gather rates
@@ -287,6 +306,77 @@ export class GameWorld {
         // Building system to be expanded
         break;
     }
+  }
+
+  // ─── Gradual UI theme blending ─────────────────────────────────
+
+  /**
+   * CSS custom properties for each era's UI theme.
+   * These are the core tokens that get interpolated.
+   */
+  private static readonly ERA_CSS_TOKENS: Record<string, { primary: string; secondary: string; border: string }> = {
+    dawn:          { primary: '#CC7722', secondary: '#8B4513', border: '#5C4033' },
+    awakening:     { primary: '#6B8E9B', secondary: '#8B9556', border: '#4A6060' },
+    roots:         { primary: '#7A9A50', secondary: '#5A7040', border: '#506040' },
+    forge:         { primary: '#C86030', secondary: '#8A4020', border: '#6A3828' },
+    empire:        { primary: '#B89050', secondary: '#7A6030', border: '#605028' },
+    convergence:   { primary: '#6080B0', secondary: '#406080', border: '#385060' },
+    enlightenment: { primary: '#C0A060', secondary: '#806830', border: '#605028' },
+    revolution:    { primary: '#908070', secondary: '#605040', border: '#484038' },
+    modern:        { primary: '#5080A0', secondary: '#306070', border: '#284858' },
+    horizon:       { primary: '#4060A0', secondary: '#284878', border: '#203858' },
+  };
+
+  /** Track the last applied blend so we do not thrash the DOM. */
+  private lastUIBlend = 0;
+
+  /**
+   * When blend progress exceeds 0.7, start interpolating key CSS custom
+   * properties on the #ui-overlay toward the next era's palette.
+   * This makes panel borders, accent colors, and progress bars
+   * subtly shift before the era-advance cinematic fires.
+   */
+  private applyUIBlendTheme(progress: number, currentEra: EraId, nextEra: EraId): void {
+    // Only start UI blending once we are well past the halfway mark
+    const UI_BLEND_START = 0.7;
+    const overlay = document.getElementById('ui-overlay');
+    if (!overlay) return;
+
+    if (progress < UI_BLEND_START) {
+      // Remove any inline overrides so the CSS class rules apply cleanly
+      if (this.lastUIBlend > 0) {
+        overlay.style.removeProperty('--era-primary');
+        overlay.style.removeProperty('--era-secondary');
+        overlay.style.removeProperty('--era-border');
+        this.lastUIBlend = 0;
+      }
+      return;
+    }
+
+    // Map global [0.7..1.0] range into a local [0..1] blend factor
+    const t = (progress - UI_BLEND_START) / (1.0 - UI_BLEND_START);
+    // Avoid micro-updates
+    if (Math.abs(t - this.lastUIBlend) < 0.01) return;
+    this.lastUIBlend = t;
+
+    const fromTokens = GameWorld.ERA_CSS_TOKENS[currentEra] ?? GameWorld.ERA_CSS_TOKENS['dawn'];
+    const toTokens = GameWorld.ERA_CSS_TOKENS[nextEra] ?? fromTokens;
+
+    overlay.style.setProperty('--era-primary', this.lerpCSSColor(fromTokens.primary, toTokens.primary, t));
+    overlay.style.setProperty('--era-secondary', this.lerpCSSColor(fromTokens.secondary, toTokens.secondary, t));
+    overlay.style.setProperty('--era-border', this.lerpCSSColor(fromTokens.border, toTokens.border, t));
+  }
+
+  /** Linearly interpolate two hex color strings for CSS overrides. */
+  private lerpCSSColor(hexA: string, hexB: string, t: number): string {
+    const a = parseInt(hexA.replace('#', ''), 16);
+    const b = parseInt(hexB.replace('#', ''), 16);
+    const rA = (a >> 16) & 0xff, gA = (a >> 8) & 0xff, bA = a & 0xff;
+    const rB = (b >> 16) & 0xff, gB = (b >> 8) & 0xff, bB = b & 0xff;
+    const r = Math.round(rA + (rB - rA) * t);
+    const g = Math.round(gA + (gB - gA) * t);
+    const bl = Math.round(bA + (bB - bA) * t);
+    return `#${((r << 16) | (g << 8) | bl).toString(16).padStart(6, '0')}`;
   }
 
   // ─── UI data pushing ───────────────────────────────────────────────
