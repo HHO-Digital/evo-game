@@ -14,7 +14,7 @@ const MAX_STAT = 100;
 
 export class CharacterPanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
+  private contentEl!: HTMLElement;
   private visible = true;
 
   constructor(private eventBus: EventBus) {

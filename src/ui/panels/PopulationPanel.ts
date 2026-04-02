@@ -12,7 +12,7 @@ import { formatNumber } from '@/utils/formatting';
 
 export class PopulationPanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
+  private contentEl!: HTMLElement;
   private visible = true;
   private currentState: PopulationState | null = null;
 

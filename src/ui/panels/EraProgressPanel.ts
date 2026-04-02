@@ -13,7 +13,7 @@ import { GlassPanel } from '@/ui/components/GlassPanel';
 
 export class EraProgressPanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
+  private contentEl!: HTMLElement;
   private visible = true;
   private currentState: EraProgression | null = null;
 

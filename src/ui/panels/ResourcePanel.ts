@@ -12,7 +12,7 @@ import { formatNumber, formatRate } from '@/utils/formatting';
 
 export class ResourcePanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
+  private contentEl!: HTMLElement;
   private visible = true;
   private resourceElements: Map<string, HTMLElement> = new Map();
 

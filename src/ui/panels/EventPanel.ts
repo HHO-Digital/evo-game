@@ -13,8 +13,8 @@ import { GlassPanel } from '@/ui/components/GlassPanel';
 
 export class EventPanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
-  private backdropEl: HTMLElement;
+  private contentEl!: HTMLElement;
+  private backdropEl!: HTMLElement;
   private visible = false;
   private currentEvent: GameEventDefinition | null = null;
 

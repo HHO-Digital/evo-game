@@ -26,7 +26,7 @@ const TECH_DISPLAY_CACHE: Map<string, TechDisplayInfo> = new Map();
 
 export class TechTreePanel {
   private el: HTMLElement;
-  private contentEl: HTMLElement;
+  private contentEl!: HTMLElement;
   private visible = false;
   private collapsedBranches: Set<string> = new Set();
   private currentState: TechTreeState | null = null;
