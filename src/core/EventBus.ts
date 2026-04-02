@@ -33,6 +33,14 @@ export interface GameEvents {
   'gameEvent:triggered': { eventId: string };
   'gameEvent:choiceMade': { eventId: string; choiceId: string };
 
+  // NPC & Lifespan events
+  'npc:born': { npcId: string; parentId?: string };
+  'npc:died': { npcId: string; age: number };
+  'npc:stageChanged': { npcId: string; from: string; to: string };
+  'npc:relationshipChanged': { fromId: string; toId: string; type: string; bond: number };
+  'succession:triggered': { candidates: number };
+  'succession:completed': { newPlayerId: string; generation: number };
+
   // UI events
   'ui:panelOpened': { panelId: string };
   'ui:panelClosed': { panelId: string };

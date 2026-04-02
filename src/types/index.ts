@@ -5,3 +5,4 @@ export * from './character';
 export * from './population';
 export * from './technology';
 export * from './environment';
+export * from './npc';

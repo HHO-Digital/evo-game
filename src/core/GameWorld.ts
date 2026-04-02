@@ -11,6 +11,7 @@ import { TechTreeSubsystem } from '@/subsystems/TechTreeSubsystem';
 import { CharacterSubsystem } from '@/subsystems/CharacterSubsystem';
 import { EnvironmentSubsystem } from '@/subsystems/EnvironmentSubsystem';
 import { EventSubsystem } from '@/subsystems/EventSubsystem';
+import { NPCSubsystem } from '@/subsystems/NPCSubsystem';
 
 import type { SubsystemBase } from './SubsystemBase';
 import type { TechEffect, EventConsequence, EraId } from '@/types';
@@ -36,6 +37,7 @@ export class GameWorld {
   private character: CharacterSubsystem;
   private environment: EnvironmentSubsystem;
   private events: EventSubsystem;
+  private npcs: NPCSubsystem;
 
   private subsystems: SubsystemBase<unknown>[] = [];
 
@@ -52,6 +54,7 @@ export class GameWorld {
     this.character = new CharacterSubsystem(this.eventBus);
     this.environment = new EnvironmentSubsystem(this.eventBus);
     this.events = new EventSubsystem(this.eventBus);
+    this.npcs = new NPCSubsystem(this.eventBus);
 
     this.subsystems = [
       this.era,
@@ -61,6 +64,7 @@ export class GameWorld {
       this.character,
       this.environment,
       this.events,
+      this.npcs,
     ];
 
     // Rendering & UI
